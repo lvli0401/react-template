@@ -1,4 +1,4 @@
-# webpack5 + react 脚手架
+# webpack5 + react18 脚手架
 
 ## 安装
 
@@ -10,4 +10,9 @@ $ yarn
 
 ```bash
 $ yarn start
+```
+
+## 打包
+```bash
+$ yarn build
 ```
