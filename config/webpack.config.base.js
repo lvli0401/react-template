@@ -5,6 +5,7 @@ const resolvePath = (relativePath) => path.resolve(__dirname, relativePath);
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 // css 代码打包分离
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ArcoWebpackPlugin = require("@arco-plugins/webpack-react");
 
 // 基础配置
 const baseConfig = {
@@ -23,7 +24,18 @@ const baseConfig = {
       // MiniCssExtractPlugin插件和style-loader冲突，所以这里用MiniCssExtractPlugin插件替换了style-loader
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader", // translates CSS into CommonJS
+            options: {
+              importLoaders: 1,
+              modules: true,
+              sourceMap: true,
+            },
+          },
+          "postcss-loader",
+        ],
       },
       // 对less文件的处理
       {
@@ -69,6 +81,7 @@ const baseConfig = {
     new MiniCssExtractPlugin({
       filename: `[name].[hash:8].css`,
     }),
+    new ArcoWebpackPlugin(),
   ],
 };
 module.exports = {
