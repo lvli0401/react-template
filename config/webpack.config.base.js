@@ -5,7 +5,15 @@ const resolvePath = (relativePath) => path.resolve(__dirname, relativePath);
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 // css 代码打包分离
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// 字节arco-design引入插件
 const ArcoWebpackPlugin = require("@arco-plugins/webpack-react");
+// 打包分析插件
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+// 压缩js
+const TerserPlugin = require("terser-webpack-plugin");
+// 压缩css插件
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 // 基础配置
 const baseConfig = {
@@ -67,6 +75,50 @@ const baseConfig = {
     alias: {
       "@": resolvePath("../src"),
     },
+    // 只采用 main 字段作为入口文件描述字段，以减少搜索步骤
+    mainFields: ["main"],
+  },
+  // 不用打包
+  // externals: {
+  //   react: "React",
+  // },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+      }),
+      new OptimizeCSSAssetsPlugin({
+        assetNameRegExp: /\.css$/,
+        safe: true,
+        cache: true,
+        parallel: true,
+        discardComments: {
+          removeAll: true,
+        },
+      }),
+    ],
+    splitChunks: {
+      chunks: "async",
+      minSize: 20000,
+      minRemainingSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      enforceSizeThreshold: 50000,
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   // 插件的处理
   plugins: [
@@ -82,7 +134,13 @@ const baseConfig = {
       filename: `[name].[hash:8].css`,
     }),
     new ArcoWebpackPlugin(),
-  ],
+  ].concat(
+    process.env.ANALYZER
+      ? new BundleAnalyzerPlugin({
+          analyzerPort: 9090, // 展示打包报告的http服务器端口
+        })
+      : []
+  ),
 };
 module.exports = {
   baseConfig,
