@@ -173,7 +173,7 @@ const baseConfig = {
   ].concat(
     process.env.ANALYZER
       ? new BundleAnalyzerPlugin({
-          analyzerPort: 9090, // 展示打包报告的http服务器端口
+          analyzerPort: 8001, // 展示打包报告的http服务器端口
         })
       : []
   ),
