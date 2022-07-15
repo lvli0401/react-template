@@ -1,0 +1,23 @@
+.app {
+  text-align: center;
+  .appLogo {
+    width: 30vw;
+    pointer-events: none;
+    margin: 100px auto 10px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .appLogo {
+    animation: appLogoSpin infinite 20s linear;
+  }
+}
+
+@keyframes appLogoSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

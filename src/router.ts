@@ -1,9 +1,9 @@
-import { lazy } from "react";
+import React, { lazy } from "react";
 interface Router {
   name?: string;
   path: string;
   children?: Array<Router>;
-  component: any;
+  component: React.ReactNode;
 }
 
 const router: Array<Router> = [
